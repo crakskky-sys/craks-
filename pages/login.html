@@ -23,7 +23,7 @@
         </div>
         <div class="form-group">
           <label>Password <span class="required">*</span></label>
-          <input type="password" id="login-password" required placeholder="Enter your password" minlength="8">
+          <input type="password" id="login-password" required placeholder="Enter your password" minlength="6">
         </div>
         <button type="submit" class="btn btn-primary" id="btn-login">Log In</button>
       </form>
@@ -32,7 +32,6 @@
         <a href="#" id="forgot-link">Forgot Password?</a>
       </div>
 
-      <!-- Forgot password form (hidden by default) -->
       <form id="forgot-form" class="hidden" style="margin-top:24px">
         <div class="form-group">
           <label>Enter your email to reset password</label>
@@ -47,64 +46,108 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-client.js"></script>
-  <script src="../js/auth.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      // Check if already logged in
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const userData = await getCurrentUser();
-        if (userData) redirectToDashboard(userData.role);
-      }
+    // Supabase config
+    const SUPABASE_URL = 'https://fdaakrhmsmsunhfbpdnm.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkYWFrcmhtc21zdW5oZmJwZG5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwNDg2MzYsImV4cCI6MjA4NTYyNDYzNn0.myggtq9jG6mhzURKhowv81Xoq19CTHmiligFNG7sFHs';
 
-      // Login form
-      document.getElementById('login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('btn-login');
-        const errorEl = document.getElementById('login-error');
-        btn.disabled = true;
-        btn.textContent = 'Logging in...';
-        errorEl.style.display = 'none';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        try {
-          const email = document.getElementById('login-email').value;
-          const password = document.getElementById('login-password').value;
-          await login(email, password);
-          const userData = await getCurrentUser();
-          if (userData) redirectToDashboard(userData.role);
-        } catch (err) {
-          errorEl.textContent = err.message || 'Login failed';
-          errorEl.style.display = 'block';
+    const errorEl = document.getElementById('login-error');
+
+    function showError(msg) {
+      errorEl.textContent = msg;
+      errorEl.style.display = 'block';
+    }
+
+    // Login form
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-login');
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      btn.disabled = true;
+      btn.textContent = 'Logging in...';
+      errorEl.style.display = 'none';
+
+      try {
+        // Login with Supabase Auth
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+
+        if (error) {
+          showError(error.message);
+          btn.disabled = false;
+          btn.textContent = 'Log In';
+          return;
         }
 
+        // Get user role from database
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('role, active')
+          .eq('id', data.user.id)
+          .single();
+
+        if (userError || !userData) {
+          showError('User not found in database. Contact admin.');
+          btn.disabled = false;
+          btn.textContent = 'Log In';
+          return;
+        }
+
+        if (!userData.active) {
+          showError('Your account is inactive. Contact admin.');
+          await supabase.auth.signOut();
+          btn.disabled = false;
+          btn.textContent = 'Log In';
+          return;
+        }
+
+        // Redirect based on role
+        if (userData.role === 'admin') {
+          window.location.href = 'admin-dashboard.html';
+        } else if (userData.role === 'advisor') {
+          window.location.href = 'advisor-dashboard.html';
+        } else {
+          window.location.href = 'team-dashboard.html';
+        }
+
+      } catch (err) {
+        showError('Error: ' + err.message);
         btn.disabled = false;
         btn.textContent = 'Log In';
-      });
+      }
+    });
 
-      // Forgot password toggle
-      document.getElementById('forgot-link').addEventListener('click', (e) => {
-        e.preventDefault();
-        document.getElementById('login-form').classList.add('hidden');
-        document.getElementById('forgot-form').classList.remove('hidden');
-      });
+    // Forgot password toggle
+    document.getElementById('forgot-link').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('forgot-form').classList.remove('hidden');
+    });
 
-      document.getElementById('back-to-login').addEventListener('click', (e) => {
-        e.preventDefault();
-        document.getElementById('login-form').classList.remove('hidden');
-        document.getElementById('forgot-form').classList.add('hidden');
-      });
+    document.getElementById('back-to-login').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('login-form').classList.remove('hidden');
+      document.getElementById('forgot-form').classList.add('hidden');
+    });
 
-      // Reset password form
-      document.getElementById('forgot-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        try {
-          await resetPassword(document.getElementById('reset-email').value);
-          alert('Password reset email sent. Check your inbox.');
-        } catch (err) {
-          alert('Error: ' + err.message);
-        }
-      });
+    // Reset password form
+    document.getElementById('forgot-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(
+          document.getElementById('reset-email').value
+        );
+        if (error) throw error;
+        alert('Password reset email sent. Check your inbox.');
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
     });
   </script>
 </body>
