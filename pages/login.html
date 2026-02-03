@@ -47,12 +47,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // Supabase config
     const SUPABASE_URL = 'https://fdaakrhmsmsunhfbpdnm.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkYWFrcmhtc21zdW5oZmJwZG5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwNDg2MzYsImV4cCI6MjA4NTYyNDYzNn0.myggtq9jG6mhzURKhowv81Xoq19CTHmiligFNG7sFHs';
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const errorEl = document.getElementById('login-error');
 
     function showError(msg) {
@@ -60,7 +58,6 @@
       errorEl.style.display = 'block';
     }
 
-    // Login form
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('btn-login');
@@ -72,11 +69,7 @@
       errorEl.style.display = 'none';
 
       try {
-        // Login with Supabase Auth
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
 
         if (error) {
           showError(error.message);
@@ -85,8 +78,7 @@
           return;
         }
 
-        // Get user role from database
-        const { data: userData, error: userError } = await supabase
+        const { data: userData, error: userError } = await sb
           .from('users')
           .select('role, active')
           .eq('id', data.user.id)
@@ -101,13 +93,12 @@
 
         if (!userData.active) {
           showError('Your account is inactive. Contact admin.');
-          await supabase.auth.signOut();
+          await sb.auth.signOut();
           btn.disabled = false;
           btn.textContent = 'Log In';
           return;
         }
 
-        // Redirect based on role
         if (userData.role === 'admin') {
           window.location.href = 'admin-dashboard.html';
         } else if (userData.role === 'advisor') {
@@ -123,7 +114,6 @@
       }
     });
 
-    // Forgot password toggle
     document.getElementById('forgot-link').addEventListener('click', (e) => {
       e.preventDefault();
       document.getElementById('login-form').classList.add('hidden');
@@ -136,15 +126,12 @@
       document.getElementById('forgot-form').classList.add('hidden');
     });
 
-    // Reset password form
     document.getElementById('forgot-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       try {
-        const { error } = await supabase.auth.resetPasswordForEmail(
-          document.getElementById('reset-email').value
-        );
+        const { error } = await sb.auth.resetPasswordForEmail(document.getElementById('reset-email').value);
         if (error) throw error;
-        alert('Password reset email sent. Check your inbox.');
+        alert('Password reset email sent!');
       } catch (err) {
         alert('Error: ' + err.message);
       }
@@ -152,4 +139,3 @@
   </script>
 </body>
 </html>
-
