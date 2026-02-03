@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRAKS - Company Fund</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+  <div class="loading-overlay hidden" id="loading-overlay"><div class="spinner"></div></div>
+  <div class="sidebar-overlay"></div>
+
+  <div class="app-container">
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h2>CRAKS</h2>
+        <p>Payment Management</p>
+      </div>
+      <ul class="sidebar-nav">
+        <li><a href="admin-dashboard.html"><span class="nav-icon">&#9632;</span> Dashboard</a></li>
+        <li><a href="add-project.html"><span class="nav-icon">+</span> Add Project</a></li>
+        <li><a href="monthly-payout.html"><span class="nav-icon">$</span> Monthly Payouts</a></li>
+        <li><a href="manage-users.html"><span class="nav-icon">&#9775;</span> Manage Users</a></li>
+        <li><a href="company-fund.html" class="active"><span class="nav-icon">&#9733;</span> Company Fund</a></li>
+        <li><a href="reports.html"><span class="nav-icon">&#9776;</span> Reports</a></li>
+      </ul>
+      <div class="sidebar-user">
+        <div class="user-name"></div>
+        <div class="user-role"></div>
+        <button class="btn-logout" id="btn-logout">Log out</button>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <div class="mobile-header">
+        <button class="hamburger"><span></span><span></span><span></span></button>
+        <h3>CRAKS</h3>
+        <div></div>
+      </div>
+
+      <div id="alert-container"></div>
+
+      <div class="page-header">
+        <h1>Company Fund</h1>
+      </div>
+
+      <!-- Balance -->
+      <div class="fund-balance">
+        <div class="balance-label">Current Balance</div>
+        <div class="balance-amount" id="fund-balance">LKR 0.00</div>
+      </div>
+
+      <!-- Add Transaction (admin only) -->
+      <div class="card" id="fund-form-card">
+        <h3 class="mb-16">Add Transaction</h3>
+        <form id="fund-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Type <span class="required">*</span></label>
+              <select id="txn-type" required>
+                <option value="">Select...</option>
+                <option value="credit">Credit (Add)</option>
+                <option value="debit">Debit (Withdraw)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Amount <span class="required">*</span></label>
+              <input type="number" step="0.01" min="0.01" id="txn-amount" required placeholder="0.00">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Description <span class="required">*</span></label>
+              <input type="text" id="txn-description" required placeholder="Transaction description">
+            </div>
+            <div class="form-group">
+              <label>Date <span class="required">*</span></label>
+              <input type="date" id="txn-date" required>
+            </div>
+          </div>
+          <div class="form-actions" style="border-top:none;padding-top:0">
+            <button type="submit" class="btn btn-primary">Add Transaction</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Transaction History -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Transaction History</h3>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Balance</th>
+                <th>Description</th>
+                <th>Created By</th>
+              </tr>
+            </thead>
+            <tbody id="fund-table-body">
+              <tr><td colspan="6" class="text-center">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/company-fund.js"></script>
+</body>
+</html>

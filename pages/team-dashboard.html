@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRAKS - My Dashboard</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+  <div class="loading-overlay hidden" id="loading-overlay"><div class="spinner"></div></div>
+
+  <div class="app-container">
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h2>CRAKS</h2>
+        <p>Team Dashboard</p>
+      </div>
+      <ul class="sidebar-nav">
+        <li><a href="team-dashboard.html" class="active"><span class="nav-icon">&#9632;</span> My Dashboard</a></li>
+      </ul>
+      <div class="sidebar-user">
+        <div class="user-name"></div>
+        <div class="user-role"></div>
+        <button class="btn-logout" id="btn-logout">Log out</button>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <div class="mobile-header">
+        <button class="hamburger"><span></span><span></span><span></span></button>
+        <h3>CRAKS</h3>
+        <div></div>
+      </div>
+      <div class="sidebar-overlay"></div>
+
+      <div id="alert-container"></div>
+
+      <div class="page-header">
+        <h1>My Dashboard</h1>
+      </div>
+
+      <!-- Personal Info -->
+      <div class="card">
+        <h3 class="mb-16">Personal Information</h3>
+        <div class="personal-info">
+          <div class="info-item">
+            <label>Name</label>
+            <div class="value" id="member-name">--</div>
+          </div>
+          <div class="info-item">
+            <label>Join Date</label>
+            <div class="value" id="member-join">--</div>
+          </div>
+          <div class="info-item">
+            <label>All-Time Earnings</label>
+            <div class="value" id="total-earnings">--</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Month -->
+      <div class="card earnings-card">
+        <div class="label">Current Month Estimate</div>
+        <div class="amount" id="current-estimate">--</div>
+        <span class="badge badge-pending" id="current-status">pending</span>
+      </div>
+
+      <!-- Payment History -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Payment History (Last 6 Months)</h3>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Paid Date</th>
+              </tr>
+            </thead>
+            <tbody id="history-table-body">
+              <tr><td colspan="4" class="text-center">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/team.js"></script>
+</body>
+</html>

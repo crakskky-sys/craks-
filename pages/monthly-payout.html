@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRAKS - Monthly Payouts</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+  <div class="loading-overlay hidden" id="loading-overlay"><div class="spinner"></div></div>
+  <div class="sidebar-overlay"></div>
+
+  <div class="app-container">
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h2>CRAKS</h2>
+        <p>Payment Management</p>
+      </div>
+      <ul class="sidebar-nav">
+        <li><a href="admin-dashboard.html"><span class="nav-icon">&#9632;</span> Dashboard</a></li>
+        <li><a href="add-project.html"><span class="nav-icon">+</span> Add Project</a></li>
+        <li><a href="monthly-payout.html" class="active"><span class="nav-icon">$</span> Monthly Payouts</a></li>
+        <li><a href="manage-users.html"><span class="nav-icon">&#9775;</span> Manage Users</a></li>
+        <li><a href="company-fund.html"><span class="nav-icon">&#9733;</span> Company Fund</a></li>
+        <li><a href="reports.html"><span class="nav-icon">&#9776;</span> Reports</a></li>
+      </ul>
+      <div class="sidebar-user">
+        <div class="user-name"></div>
+        <div class="user-role"></div>
+        <button class="btn-logout" id="btn-logout">Log out</button>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <div class="mobile-header">
+        <button class="hamburger"><span></span><span></span><span></span></button>
+        <h3>CRAKS</h3>
+        <div></div>
+      </div>
+
+      <div id="alert-container"></div>
+
+      <div class="page-header">
+        <h1>Monthly Payouts</h1>
+      </div>
+
+      <!-- Month Selector -->
+      <div class="month-selector">
+        <label><strong>Select Month:</strong></label>
+        <select id="month-select"></select>
+        <button class="btn btn-primary" id="btn-generate">Generate Payouts</button>
+      </div>
+
+      <!-- Calculation Summary -->
+      <div class="calc-summary hidden" id="calc-summary">
+        <h3 class="mb-16">Calculation Breakdown</h3>
+        <div class="summary-row total">
+          <span>Total Net Profit</span>
+          <span id="summary-profit">--</span>
+        </div>
+        <div class="distribution-breakdown">
+          <div class="dist-item dist-founder">
+            <div class="dist-label">Founder (Ishaq)</div>
+            <div class="dist-percent">30%</div>
+            <div class="dist-value" id="summary-founder">--</div>
+          </div>
+          <div class="dist-item dist-advisor">
+            <div class="dist-label">Chief Advisor</div>
+            <div class="dist-percent">15%</div>
+            <div class="dist-value" id="summary-advisor">--</div>
+          </div>
+          <div class="dist-item dist-fund">
+            <div class="dist-label">Company Fund</div>
+            <div class="dist-percent">15%</div>
+            <div class="dist-value" id="summary-fund">--</div>
+          </div>
+          <div class="dist-item dist-team">
+            <div class="dist-label">Team Pool</div>
+            <div class="dist-percent">40%</div>
+            <div class="dist-value" id="summary-team-pool">--</div>
+          </div>
+        </div>
+        <div class="summary-row mt-16">
+          <span>Active Team Members</span>
+          <span id="summary-team-count">--</span>
+        </div>
+        <div class="summary-row">
+          <span>Per Member Amount</span>
+          <span id="summary-per-member">--</span>
+        </div>
+      </div>
+
+      <!-- Payouts Table -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Individual Payouts</h3>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Paid Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="payouts-table-body">
+              <tr><td colspan="6" class="text-center">Select a month to view payouts</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/calculations.js"></script>
+  <script src="../js/payouts.js"></script>
+</body>
+</html>

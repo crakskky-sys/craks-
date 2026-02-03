@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRAKS - Admin Dashboard</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+  <div class="loading-overlay hidden" id="loading-overlay"><div class="spinner"></div></div>
+  <div class="sidebar-overlay"></div>
+
+  <div class="app-container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h2>CRAKS</h2>
+        <p>Payment Management</p>
+      </div>
+      <ul class="sidebar-nav">
+        <li><a href="admin-dashboard.html" class="active"><span class="nav-icon">&#9632;</span> Dashboard</a></li>
+        <li><a href="add-project.html"><span class="nav-icon">+</span> Add Project</a></li>
+        <li><a href="monthly-payout.html"><span class="nav-icon">$</span> Monthly Payouts</a></li>
+        <li><a href="manage-users.html"><span class="nav-icon">&#9775;</span> Manage Users</a></li>
+        <li><a href="company-fund.html"><span class="nav-icon">&#9733;</span> Company Fund</a></li>
+        <li><a href="reports.html"><span class="nav-icon">&#9776;</span> Reports</a></li>
+      </ul>
+      <div class="sidebar-user">
+        <div class="user-name"></div>
+        <div class="user-role"></div>
+        <button class="btn-logout" id="btn-logout">Log out</button>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="mobile-header">
+        <button class="hamburger"><span></span><span></span><span></span></button>
+        <h3>CRAKS</h3>
+        <div></div>
+      </div>
+
+      <div id="alert-container"></div>
+
+      <div class="page-header">
+        <h1>Dashboard</h1>
+        <button class="btn btn-outline btn-sm" onclick="cleanupOldData().then(()=>showAlert('Cleanup done','success'))">Cleanup Old Data</button>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Income This Month</div>
+          <div class="stat-value" id="stat-income">--</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pending Payouts</div>
+          <div class="stat-value" id="stat-pending">--</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Projects This Month</div>
+          <div class="stat-value" id="stat-projects">--</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Company Fund Balance</div>
+          <div class="stat-value" id="stat-fund">--</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Recent Activity -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Recent Activity</h3>
+          </div>
+          <ul class="activity-log" id="activity-log">
+            <li class="empty-state"><p>Loading...</p></li>
+          </ul>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Quick Actions</h3>
+          </div>
+          <div class="quick-actions">
+            <a href="add-project.html" class="btn btn-primary">Add Project</a>
+            <a href="monthly-payout.html" class="btn btn-success">Generate Payouts</a>
+            <a href="manage-users.html" class="btn btn-outline">Manage Users</a>
+            <a href="reports.html" class="btn btn-outline">View Reports</a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>
